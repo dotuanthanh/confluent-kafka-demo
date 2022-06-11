@@ -31,6 +31,6 @@ func (k *kafka) PubMessage([]byte) error {
 }
 
 func (k *kafka) Stop() error {
-
+	k.producer.Close()
 	return nil
 }

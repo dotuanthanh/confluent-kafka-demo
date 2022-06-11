@@ -11,24 +11,25 @@ type tickTik struct {
 }
 
 func NewTicker(config *configs.Ticker) Ticker {
-	//t := time.NewTicker()
-	systemTime := time.Now()
 	timeTick := time.Date(config.Year, time.Month(config.Month), config.Day, config.Hours, config.Minute, 0, 0, time.Local)
-	duration := systemTime.Sub(timeTick)
-	ticker := time.NewTicker(duration)
-
-	return &tickTik{
-		tik:     ticker,
+	tickTik := &tickTik{
 		timeTik: timeTick,
 	}
+	duration := tickTik.getNextDuration()
+	ticker := time.NewTicker(duration)
+	tickTik.tik = ticker
+	return tickTik
 }
 
-func (t *tickTik) renew() {
+func (t *tickTik) getNextDuration() time.Duration {
 	if t.timeTik.Before(time.Now()) {
 		t.timeTik.Add(24 * time.Hour)
 	}
-	newDuration := t.timeTik.Sub(time.Now())
-	t.tik.Reset(newDuration)
+	return t.timeTik.Sub(time.Now())
+}
+
+func (t *tickTik) renew() {
+	t.tik.Reset(t.getNextDuration())
 }
 
 func (t *tickTik) StartCronJob(control chan struct{}) {
@@ -36,6 +37,7 @@ func (t *tickTik) StartCronJob(control chan struct{}) {
 		select {
 		case <-t.tik.C:
 			t.renew()
+			close(control)
 		}
 	}
 }
