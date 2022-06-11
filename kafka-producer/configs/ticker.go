@@ -2,9 +2,10 @@ package configs
 
 //Ticker define config of time to start cronjob
 type Ticker struct {
-	DayOfWeek string `default:""`
-	Month     string `default:""`
-	Day       string `default:""`
-	Hours     string `default:""`
-	Minute    string `default:""`
+	DayOfWeek int `default:""`
+	Year      int `default:""`
+	Month     int `default:""`
+	Day       int `default:""`
+	Hours     int `default:""`
+	Minute    int `default:""`
 }

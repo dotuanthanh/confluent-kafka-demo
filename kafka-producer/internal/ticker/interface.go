@@ -1,6 +1,6 @@
 package ticker
 
 type Ticker interface {
-	StartCronJob()
+	StartCronJob(control chan struct{})
 	Close()
 }
